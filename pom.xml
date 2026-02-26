@@ -10,9 +10,9 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wattu.pixme</groupId>
-	<artifactId>users</artifactId>
+	<artifactId>pixmeusers</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>users</name>
+	<name>pixme-users</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -62,7 +62,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
 				<configuration>
+					<release>25</release>
+					<compilerArgs>
+                        --enable-preview
+					</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
@@ -74,11 +79,24 @@
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>build-native</id>
+						<goals>
+							<goal>compile-no-fork</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<image>
+						<name>ghcr.io/papawattu/${project.artifactId}</name>
+					</image>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
