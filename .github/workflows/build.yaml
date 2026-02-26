@@ -32,7 +32,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run tests
-        run: mvn test -B --enable-preview
+        run: mvn test -B
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
