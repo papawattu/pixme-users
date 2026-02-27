@@ -15,11 +15,8 @@ RUN mvn dependency:go-offline -B
 # Copy source code and build
 COPY src ./src
 
-# Build the Spring Boot fat JAR.
-# Run compile + jar + spring-boot:repackage directly to avoid
-# the native-maven-plugin execution bound to the 'package' phase
-# (it requires GraalVM which is not available in this image).
-RUN mvn compile jar:jar spring-boot:repackage -B -DskipTests
+# Build the Spring Boot fat JAR
+RUN mvn package -B -DskipTests
 
 # Runtime stage: slim JDK 25 image
 FROM eclipse-temurin:25-jre-alpine

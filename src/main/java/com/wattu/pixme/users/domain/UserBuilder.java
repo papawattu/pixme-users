@@ -6,6 +6,7 @@ public class UserBuilder {
 
     private String email;
     private String name;
+    private String role = "user";
 
     public UserBuilder setEmail(String email) {
         this.email = email;
@@ -17,7 +18,12 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder setRole(String role) {
+        this.role = role;
+        return this;
+    }
+
     public User build() {
-        return new User(UUID.randomUUID().toString(), name, email);
+        return new User(UUID.randomUUID().toString(), name, email, role);
     }
 }

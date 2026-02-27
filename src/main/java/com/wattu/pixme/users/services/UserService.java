@@ -1,16 +1,19 @@
 package com.wattu.pixme.users.services;
 
-import java.lang.classfile.ClassFile.Option;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wattu.pixme.users.domain.User;
-import com.wattu.pixme.users.domain.UserBuilder;
 
-@Component
+@Service
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
@@ -19,29 +22,37 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        // Logic to retrieve all users
         return userRepository.findAll();
-
     }
 
+    @Transactional
     public User createUser(User user) {
-        // Logic to create a new user
         var exists = userRepository.findByEmail(user.email());
         if (exists.isPresent()) {
             throw new IllegalArgumentException("User with email " + user.email() + " already exists.");
         }
-        var userWithId = new UserBuilder().setEmail(user.email()).setName(user.name()).build();
-        userRepository.save(userWithId);
-        return userWithId;
+        var newUser = User.create(user.name(), user.email());
+        userRepository.save(newUser);
+        log.info("Created user id={} email={}", newUser.id(), newUser.email());
+        return newUser;
     }
 
     public Optional<User> getUserById(String id) {
-        // Logic to retrieve a user by ID
         return userRepository.findById(id);
     }
 
     public Optional<User> getUserByEmail(String email) {
-        // Logic to retrieve a user by email
         return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public boolean deleteUser(String id) {
+        var user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return false;
+        }
+        userRepository.deleteById(id);
+        log.info("Deleted user id={}", id);
+        return true;
     }
 }
